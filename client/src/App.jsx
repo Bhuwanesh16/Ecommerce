@@ -17,12 +17,14 @@ import NotFound from './pages/not-found';
 import CheckAuth from './components/common/check-auth';
 import UnAuthPage from './pages/unauth-page';
 
+
 function App() {
   const isAuthenticated=false;
   const user=null;
   return (
   
       <div className="flex flex-col overflow-hidden bg-white">
+       
        <h1>Header Component</h1>
        <Routes>
         <Route path='/auth' element={
@@ -63,4 +65,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

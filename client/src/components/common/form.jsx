@@ -1,4 +1,3 @@
-import React from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
@@ -11,13 +10,14 @@ import {
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 
-function CommonForm({
-    formControls,
-    formData,
-    setFormData,
-    onSubmit,
-    buttonText
 
+function CommonForm({
+  formControls,
+  formData,
+  setFormData,
+  onSubmit,
+  buttonText,
+  isBtnDisabled,
 }) {
   function renderInputsByComponentType(getControlItem) {
     let element = null;
@@ -119,7 +119,7 @@ function CommonForm({
           </div>
         ))}
       </div>
-      <Button  type="submit" className="mt-2 w-full">
+      <Button disabled={isBtnDisabled ?? false} type="submit" className="mt-2 w-full">
         {buttonText || "Submit"}
       </Button>
     </form>
