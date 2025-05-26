@@ -20,7 +20,6 @@ import UnAuthPage from './pages/unauth-page';
 function App() {
   const isAuthenticated=false;
   const user=null;
-
   return (
   
       <div className="flex flex-col overflow-hidden bg-white">
