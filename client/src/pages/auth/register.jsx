@@ -23,17 +23,20 @@ function AuthRegister() {
     event.preventDefault();
 
     dispatch(registerUser(formData)).then((data) => {
-        if(data?.payload?.success) {
-            toast({
-                title: data?.payload?.message
-            });
-            navigate('/auth/login')
-        }
-        console.log(data);
+      console.log("Register Response:", data);
+
+      if (data?.payload?.success) {
+        toast.success(data?.payload?.message || "Success"); // prefer toast.success
+        navigate("/auth/login");
+      } else {
+        toast.error(data?.payload?.message || "Something went wrong");
+      }
+
+      console.log(data);
     });
-      
-    }
-  
+
+  }
+
 
   return (
     <div className="mx-auto w-full max-w-md space-y-6">
@@ -53,7 +56,7 @@ function AuthRegister() {
       </div>
       <CommonForm
         formControls={registerFormControls}
-        buttonText="Sign Up"
+        buttonText={"Sign Up"}
         formData={formData}
         setFormData={setFormData}
         onSubmit={onSubmit}
