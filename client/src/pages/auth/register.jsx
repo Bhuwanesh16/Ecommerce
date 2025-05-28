@@ -56,7 +56,7 @@ function AuthRegister() {
       </div>
       <CommonForm
         formControls={registerFormControls}
-        buttonText={"Sign Up"}
+        buttonText="Sign Up"
         formData={formData}
         setFormData={setFormData}
         onSubmit={onSubmit}
