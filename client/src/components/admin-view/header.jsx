@@ -5,7 +5,7 @@ function AdminHeader({ setOpen })
 {
     return(
         <header className="flex item-center justify-between px-4 py-6 bg-background border-b">
-            <Button onClick={()=> setOpen(true)} className="justify-start lg:hidden sm:block">
+            <Button onClick={()=> setOpen(true)} className="justify-start lg:hidden sm:block cursor-pointer">
                 <Menu />
                 <span className="sr-only">Toggle only</span>
             </Button>
