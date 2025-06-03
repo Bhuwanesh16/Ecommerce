@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const authRouter=require('./routes/auth/auth-routes');
 const adminProductsRouter = require('./routes/admin/products-routes');
+dotenv.config();
 
 
 mongoose.set('strictQuery', true); // Optional: avoid deprecation warning
