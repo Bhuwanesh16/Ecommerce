@@ -4,7 +4,7 @@ import CommonForm from "@/components/common/form";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { addProductFormElements } from "@/config";
-import { addNewProduct, fetchAllProduct } from "@/store/admin/products-slice";
+import { addNewProduct, deleteProduct, fetchAllProduct } from "@/store/admin/products-slice";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -27,6 +27,7 @@ function AdminProducts() {
     const [imageFile, setImageFile] = useState(null);
     const [uploadedImageUrl, setUploadedImageUrl] = useState("");
     const [imageLoadingState, setImageLoadingState] = useState(false);
+     const [currentEditedId, setCurrentEditedId] = useState(null);
 
 
     const { productList } = useSelector(state => state.adminProducts || {});
@@ -35,20 +36,51 @@ function AdminProducts() {
 
     function onSubmit(event) {
         event.preventDefault();
-        dispatch(addNewProduct({
-            ...formData,
-            image: uploadedImageUrl,
-        })).then((data) => {
-            console.log(data);
+        currentEditedId !== null
+            ? dispatch(
+                updateProduct({
+                    id: currentEditedId,
+                    formData,
+                })
+            ).then((data) => {
+                console.log(data, "edit");
+
+                if (data?.payload?.success) {
+                    dispatch(fetchAllProduct());
+                    setFormData(initialFormData);
+                    setOpenProductModal(false);
+                    setCurrentEditedId(null);
+                }
+            }) :
+            dispatch(addNewProduct({
+                ...formData,
+                image: uploadedImageUrl,
+            })).then((data) => {
+                console.log(data);
+                if (data?.payload?.success) {
+                    dispatch(fetchAllProduct());
+                    setOpenProductModal(false);
+                    setImageFile(null);
+                    setFormData(initialFormData);
+                    toast.success("Product added successfully");
+                }
+            })
+    }
+    function handleDelete(getCurrentProductId) {
+        dispatch(deleteProduct(getCurrentProductId)).then((data) => {
             if (data?.payload?.success) {
                 dispatch(fetchAllProduct());
-                setOpenProductModal(false);
-                setImageFile(null);
-                setFormData(initialFormData);
-                toast.success("Product added successfully");
             }
-        })
+        });
     }
+
+    function isFormValid() {
+        return Object.keys(formData)
+            .filter((currentKey) => currentKey !== "averageReview")
+            .map((key) => formData[key] !== "")
+            .every((item) => item);
+    }
+
 
     useEffect(() => {
         dispatch(fetchAllProduct());
@@ -67,20 +99,29 @@ function AdminProducts() {
                 </Button>
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4">
-                {
-                    productList && productList.length > 0 ?
-                        productList.map(productItem => <AdminProductTile product={productItem} />) : null
-
-                }
+                {productList && productList.length > 0
+                    ? productList.map((productItem) => (
+                        <AdminProductTile
+                            setFormData={setFormData}
+                            setOpenProductModal={setOpenProductModal}
+                            setCurrentEditedId={setCurrentEditedId}
+                            product={productItem}
+                            handleDelete={handleDelete}
+                        />
+                    ))
+                    : null}
             </div>
             <Sheet
                 open={openProductModal}
-                onOpenChange={() => setOpenProductModal(false)}
+                onOpenChange={() => {setOpenProductModal(false);
+                    setCurrentEditedId(null);
+                    setFormData(initialFormData);
+                }}
             >
                 <SheetContent side="right" className="overflow-auto px-4 py-6 space-y-2">
                     <SheetHeader>
                         <SheetTitle className="text-center text-lg font-bold">
-                            Add New Product
+                            {currentEditedId !== null ? "Edit Product" : "Add New Product"}
                         </SheetTitle>
                     </SheetHeader>
                     <ProductImageUpload
@@ -90,6 +131,7 @@ function AdminProducts() {
                         setUploadedImageUrl={setUploadedImageUrl}
                         setImageLoadingState={setImageLoadingState}
                         imageLoadingState={imageLoadingState}
+                        isEditMode={currentEditedId !== null}
                     />
                     <div>
                         <CommonForm
@@ -98,6 +140,7 @@ function AdminProducts() {
                             setFormData={setFormData}
                             buttonText="Add"
                             formControls={addProductFormElements}
+                             isBtnDisabled={!isFormValid()}
                         />
                     </div>
                 </SheetContent>

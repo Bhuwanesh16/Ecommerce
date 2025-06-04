@@ -6,7 +6,7 @@ const initialState={
     productList:[],
 }
 
-export const addNewProduct=createAsyncThunk('/products/addnewproducts',
+export const addNewProduct=createAsyncThunk('/products/addnewproduct',
     async(formData)=>
 {
      const result=await axios.post('http://localhost:5000/api/admin/products/add', formData,
@@ -19,7 +19,7 @@ export const addNewProduct=createAsyncThunk('/products/addnewproducts',
      ); 
       return result?.data; 
 })
-export const fetchAllProduct=createAsyncThunk('/products/fetchallproducts',
+export const fetchAllProduct=createAsyncThunk('/products/fetchallproduct',
     async()=>
 {
      const result=await axios.get('http://localhost:5000/api/admin/products/fetch', 
@@ -27,7 +27,7 @@ export const fetchAllProduct=createAsyncThunk('/products/fetchallproducts',
      );
      return result?.data; 
 })
-export const updateProduct=createAsyncThunk('/products/updateproducts',
+export const updateProduct=createAsyncThunk('/products/updateproduct',
     async({id,formData})=>
 {
      const result=await axios.put(`http://localhost:5000/api/admin/products/update/${id}`, formData,
@@ -40,7 +40,7 @@ export const updateProduct=createAsyncThunk('/products/updateproducts',
      ); 
       return result?.data; 
 })
-export const deleteProduct=createAsyncThunk('/products/deleteproducts',
+export const deleteProduct=createAsyncThunk('/products/deleteproduct',
     async(id)=>
 {
      const result=await axios.delete(`http://localhost:5000/api/admin/products/delete/${id}`, 

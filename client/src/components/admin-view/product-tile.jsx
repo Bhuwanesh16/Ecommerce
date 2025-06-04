@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 
 
 
-function AdminProductTile({ product }) {
+function AdminProductTile({ product, setFormData, setOpenProductModal, setCurrentEditedId, handleDelete }) {
     return (
         <Card className="w-full max-w-sm mx-auto ">
             <div>
@@ -11,13 +11,17 @@ function AdminProductTile({ product }) {
                     <img
                         src={product?.image}
                         alt={product?.title}
-                        className="w-full h-[300px] border-lined object-cover rounded-t-lg hover:text-bold" />
+                        className="w-full h-[300px] border-lined object-cover rounded-t-lg " />
 
                 </div>
                 <CardContent>
-                    <h2 className="text-xl font-bold mb-2mt-2">{product?.title}</h2>
                     <div className="flex justify-between items-center mb-2">
-                        <span
+                    <h2 className="text-xl font-bold mb-2 mt-2">{product?.title}</h2>
+                    <h1 className="text-xl font-bold mb-2 mt-2">{product?.brand}</h1>
+                    <h1 className="text-xl font-bold mb-2 mt-2">{product?.category}</h1>
+                    </div>
+                    <div className="flex justify-between items-center mb-2">
+                       <span
                             className={`${product?.salePrice > 0 ? "line-through" : ""
                                 } text-lg font-semibold text-primary`}
                         >
@@ -30,10 +34,15 @@ function AdminProductTile({ product }) {
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
-                    <Button>
+                    <Button
+                    onClick={()=>{
+                        setOpenProductModal(true);
+                        setCurrentEditedId(product?._id);
+                        setFormData(product);
+                    }}>
                         Edit
                     </Button>
-                    <Button>Delete</Button>
+                    <Button onClick={() => handleDelete(product?._id)}>Delete</Button>
                 </CardFooter>
 
             </div>
