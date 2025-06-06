@@ -17,8 +17,8 @@ function AdminProductTile({ product, setFormData, setOpenProductModal, setCurren
                 <CardContent>
                     <div className="flex justify-between items-center mb-2">
                     <h2 className="text-xl font-bold mb-2 mt-2">{product?.title}</h2>
-                    <h1 className="text-xl font-bold mb-2 mt-2">{product?.brand}</h1>
-                    <h1 className="text-xl font-bold mb-2 mt-2">{product?.category}</h1>
+                    {/* <h1 className="text-xl font-bold mb-2 mt-2">{product?.brand}</h1>
+                    <h1 className="text-xl font-bold mb-2 mt-2">{product?.category}</h1> */}
                     </div>
                     <div className="flex justify-between items-center mb-2">
                        <span

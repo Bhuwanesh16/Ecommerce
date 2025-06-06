@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
 
-function ProductImageUpload({ imageFile, setImageFile, uploadedImageUrl, setUploadedImageUrl,imageLoadingState, setImageLoadingState }) {
+function ProductImageUpload({ imageFile, setImageFile, uploadedImageUrl, setUploadedImageUrl,imageLoadingState, setImageLoadingState , isEditMode}) {
     const inputRef = useRef(null);
     function handleImageFileChange(event) {
         console.log(event.target.files, "event.target.files");
@@ -57,12 +57,12 @@ function ProductImageUpload({ imageFile, setImageFile, uploadedImageUrl, setUplo
     return (
         <div className="w-full max-w-md mx-auto">
             <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
-            <div onDragOver={handleDragOver} onDrop={handleDrop} className="border-2 border-lined border-gray-300 rounded-lg p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
-                <Input id="image-upload" type="file" className="hidden" ref={inputRef} onChange={handleImageFileChange} />
+            <div onDragOver={handleDragOver} onDrop={handleDrop} className={` ${ isEditMode ? " Opacity-70 text-primary  ": ""}border-2 border-lined border-gray-300 rounded-lg p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors`}>
+                <Input id="image-upload" type="file" className="hidden" ref={inputRef} onChange={handleImageFileChange} disabled={isEditMode}/>
                 {
                     !imageFile ?
                         (
-                            <Label htmlFor="image-upload" className="flex flex-col items-center justify-center h-32 ">
+                            <Label htmlFor="image-upload" className={`${ isEditMode ? "cursor-not-allowed" : " "}flex flex-col items-center justify-center h-32 `}>
                                 <UploadCloudIcon className="w-10 h-10 text-muted-foreground " />
                                 <span >Click or drag to upload</span>
 

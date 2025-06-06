@@ -4,7 +4,7 @@ import CommonForm from "@/components/common/form";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { addProductFormElements } from "@/config";
-import { addNewProduct, deleteProduct, fetchAllProduct } from "@/store/admin/products-slice";
+import { addNewProduct, deleteProduct, fetchAllProduct, updateProduct } from "@/store/admin/products-slice";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -86,7 +86,7 @@ function AdminProducts() {
         dispatch(fetchAllProduct());
     }, [dispatch]);
 
-    console.log(productList, uploadedImageUrl, "productList");
+    console.log(formData, "productList");
 
     return (
         <Fragment>
@@ -113,7 +113,8 @@ function AdminProducts() {
             </div>
             <Sheet
                 open={openProductModal}
-                onOpenChange={() => {setOpenProductModal(false);
+                onOpenChange={() => {
+                    setOpenProductModal(false);
                     setCurrentEditedId(null);
                     setFormData(initialFormData);
                 }}
@@ -121,7 +122,9 @@ function AdminProducts() {
                 <SheetContent side="right" className="overflow-auto px-4 py-6 space-y-2">
                     <SheetHeader>
                         <SheetTitle className="text-center text-lg font-bold">
-                            {currentEditedId !== null ? "Edit Product" : "Add New Product"}
+                            {
+                            currentEditedId !== null ? "Edit Product" : "Add New Product"
+                            }
                         </SheetTitle>
                     </SheetHeader>
                     <ProductImageUpload
@@ -138,7 +141,7 @@ function AdminProducts() {
                             onSubmit={onSubmit}
                             formData={formData}
                             setFormData={setFormData}
-                            buttonText="Add"
+                            buttonText={currentEditedId!== null ? 'Edit' : 'Add'}
                             formControls={addProductFormElements}
                              isBtnDisabled={!isFormValid()}
                         />
