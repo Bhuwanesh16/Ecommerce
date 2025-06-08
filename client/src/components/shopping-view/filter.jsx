@@ -25,7 +25,7 @@ function ProductFilter({ filters, handleFilter }) {
                                                 filters[keyItem] &&
                                                 filters[keyItem].indexOf(option.id) > -1
                                             }
-                                        // onCheckedChange={() => handleFilter(keyItem, option.id)}
+                                        onCheckedChange={() => handleFilter(keyItem, option.id)}
                                         />
                                         {option.label}
                                     </Label>
