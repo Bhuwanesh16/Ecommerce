@@ -1,0 +1,30 @@
+import { Button } from "../ui/button";
+import { SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
+import UserCartItemContent from "./cart-items-content";
+
+
+
+function UserCartWrapper({cartItems})
+{
+    return(
+        <SheetContent className="sm:max-w-md mx-auto">
+            <SheetHeader>
+                <SheetTitle>Your Cart</SheetTitle>
+            </SheetHeader>
+            <div className="mt-4 ml-5 space-y-4">
+                {
+                    cartItems && cartItems.length>0 ?
+                    cartItems.map(item=><UserCartItemContent cartItem={item}/>) : null
+                }
+            </div>
+            <div className="mt-4 ml-5 mr-5 space-y-4">
+                <div className="flex justify-between mx-auto">
+                    <span className="font-bold">Total</span>
+                    <span className="font-bold">$1000</span>
+                </div>
+            </div>
+            <Button className="w-full mr-5  mt-6 ">Checkout</Button>
+        </SheetContent>
+    )
+}
+export default UserCartWrapper;

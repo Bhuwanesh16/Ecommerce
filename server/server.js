@@ -15,7 +15,8 @@ mongoose.set('strictQuery', true); // Optional: avoid deprecation warning
 mongoose.connect("mongodb+srv://bhuwaneshmanivel:Bhuwanesh16@cluster0.vkhlzol.mongodb.net/ecommerce?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  ssl: true,
+  ssl: true 
+ 
 })
 .then(() => {
   console.log(" Connected to MongoDB");
