@@ -71,21 +71,13 @@ function HeaderRightContent() {
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-
-      <Button
-
-        variant="outline"
-        size="icon"
-        className="relative"
-      >
+      <Sheet>
+      <Button variant="outline" size="icon" className="relative">
         <ShoppingCart className="w-6 h-6" />
-
         <span className="sr-only">User cart</span>
       </Button>
-
-
-
-      <DropdownMenu>
+      </Sheet>
+     <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
             <AvatarFallback className="bg-black text-white font-extrabold">

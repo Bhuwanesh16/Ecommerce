@@ -6,7 +6,7 @@ const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
 
   try {
-    // Check if email already exists
+    
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
       return res.status(400).json({
@@ -15,7 +15,7 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Check if userName already exists
+    
     const existingUserName = await User.findOne({ userName });
     if (existingUserName) {
       return res.status(400).json({
@@ -24,10 +24,10 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Hash password
+   
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create new user
+    
     const newUser = new User({
       userName,
       email,
@@ -41,7 +41,7 @@ const registerUser = async (req, res) => {
       message: "User registered successfully",
     });
   } catch (e) {
-    // Handle MongoDB duplicate key error (just in case)
+   
     if (e.code === 11000) {
       const field = Object.keys(e.keyPattern)[0];
       return res.status(400).json({
@@ -70,7 +70,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // Check password
+   
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).json({
@@ -79,7 +79,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // Generate JWT token
+    
     const token = jwt.sign(
       {
         id: user._id,
@@ -91,7 +91,7 @@ const loginUser = async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    // Send token as HttpOnly cookie and response
+   
     res.cookie("token", token, { httpOnly: true, secure: false });
 
     return res.status(200).json({

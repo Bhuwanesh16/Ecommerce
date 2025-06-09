@@ -44,8 +44,8 @@ const getFilteredProducts= async(req,res)=>{
     }
     catch(e)
     {
-        console.log(error);
-    res.status(500).json({
+      console.log(error);
+      res.status(500).json({
       success: false,
       message: "Some error occurred",
     });
