@@ -15,7 +15,7 @@ function UserCartItemContent({ cartItem }) {
 
     function handleUpdateQuantity(getCartItem,typeOfAction)
     {
-        dispatch(updateCartItems({userId:user?.id,productId: getCartItem?.id,quantity:
+        dispatch(updateCartItems({userId:user?.id,productId: getCartItem?.productId,quantity:
             typeOfAction=== 'plus' ? getCartItem?.quantity+1 : getCartItem?.quantity-1
         })).then((data)=>{
             if(data?.payload?.success)

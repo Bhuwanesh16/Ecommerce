@@ -5,12 +5,35 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setProductDetails } from "@/store/shop/products-slice";
 
 
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
+    const dispatch=useDispatch();
+    const {user}=useSelector(state=>state.auth);
+
+    function handleAddToCart(getCurrentProductId) {
+        console.log(getCurrentProductId);
+        dispatch(addToCart({ userId: user?.id, productId: getCurrentProductId, quantity: 1 })
+        ).then((data) => {
+            if (data?.payload?.success) {
+                dispatch(fetchCartItems(user?.id));
+                toast.success("Product added to Cart Successfully");
+            }
+        });
+    }
+
+    function handleDialogClose()
+    {
+        setOpen(false);
+        dispatch(setProductDetails());
+    }
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={handleDialogClose}>
             <DialogContent className="grid grid-cols-2 gap-4 sm:p-10 max-w-[40vw] sm:max-w-[40vw] lg:max-w-[50vw]">
                 <div className="relative overflow-hidden rounded-lg">
                     <img
@@ -42,17 +65,17 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                         ) : null}
                     </div>
                     <div className="flex items-center gap-2 mt-2">
-                         <div className="flex items-center gap-0.5">
-                                        <StarIcon className="w-5 h-5 fill-primary"/>
-                                        <StarIcon className="w-5 h-5 fill-primary"/>
-                                        <StarIcon className="w-5 h-5 fill-primary"/>
-                                        <StarIcon className="w-5 h-5 fill-primary"/>
-                                        <StarIcon className="w-5 h-5 fill-primary"/>
-                                    </div>
-                                    <span className="text-muted-foreground">(4.5)</span>
+                        <div className="flex items-center gap-0.5">
+                            <StarIcon className="w-5 h-5 fill-primary" />
+                            <StarIcon className="w-5 h-5 fill-primary" />
+                            <StarIcon className="w-5 h-5 fill-primary" />
+                            <StarIcon className="w-5 h-5 fill-primary" />
+                            <StarIcon className="w-5 h-5 fill-primary" />
+                        </div>
+                        <span className="text-muted-foreground">(4.5)</span>
                     </div>
                     <div className="mt-5 mb-5">
-                        <Button className="cursor-pointer w-full">Add to Cart</Button>
+                        <Button className="cursor-pointer w-full" onClick={() => handleAddToCart(productDetails?._id)}>Add to Cart</Button>
                     </div>
                     <Separator />
                     <div className="max-h-[200px] overflow-auto">
@@ -64,23 +87,23 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                                 </Avatar>
                                 <div className="grid gap-1">
                                     <div className="flex items-center gap-2">
-                                      <h3 className="font-bold">Bhuwanesh M</h3>
+                                        <h3 className="font-bold">Bhuwanesh M</h3>
                                     </div>
-                                     <div className="flex items-center gap-0.5">
-                                        <StarIcon className="w-5 h-5 fill-primary"/>
-                                        <StarIcon className="w-5 h-5 fill-primary"/>
-                                        <StarIcon className="w-5 h-5 fill-primary"/>
-                                        <StarIcon className="w-5 h-5 fill-primary"/>
-                                        <StarIcon className="w-5 h-5 fill-primary"/>
+                                    <div className="flex items-center gap-0.5">
+                                        <StarIcon className="w-5 h-5 fill-primary" />
+                                        <StarIcon className="w-5 h-5 fill-primary" />
+                                        <StarIcon className="w-5 h-5 fill-primary" />
+                                        <StarIcon className="w-5 h-5 fill-primary" />
+                                        <StarIcon className="w-5 h-5 fill-primary" />
                                     </div>
-                                   
+
                                     <p className="text-muted-foreground">This is an awesome product</p>
                                 </div>
 
                             </div>
                         </div>
                         <div className="mt-6 flex gap-1">
-                            <Input placeholder="Write a review..."/>
+                            <Input placeholder="Write a review..." />
                             <Button>Submit</Button>
 
                         </div>
