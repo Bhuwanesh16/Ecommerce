@@ -11,39 +11,27 @@ function AddressCard({
 }) {
   return (
     <Card
-      onClick={() => setCurrentSelectedAddress?.(addressInfo)}
-      className={`cursor-pointer transition-all ${
-        selectedId === addressInfo?._id
-          ? "border-2 border-primary shadow-lg"
-          : "border border-gray-200"
+      onClick={
+        setCurrentSelectedAddress
+          ? () => setCurrentSelectedAddress(addressInfo)
+          : null
+      }
+      className={`cursor-pointer border-red-700 ${
+        selectedId?._id === addressInfo?._id
+          ? "border-red-900 border-[4px]"
+          : "border-black"
       }`}
     >
-      <CardContent className="grid p-4 gap-2">
-        <Label className="font-semibold">Address: {addressInfo?.address || "-"}</Label>
-        <Label>City: {addressInfo?.city || "-"}</Label>
-        <Label>Pincode: {addressInfo?.pincode || "-"}</Label>
-        <Label>Phone: {addressInfo?.phone || "-"}</Label>
-        {addressInfo?.notes && <Label>Notes: {addressInfo.notes}</Label>}
+      <CardContent className="grid p-4 gap-4">
+        <Label>Address: {addressInfo?.address}</Label>
+        <Label>City: {addressInfo?.city}</Label>
+        <Label>Pincode: {addressInfo?.pincode}</Label>
+        <Label>Phone: {addressInfo?.phone}</Label>
+        <Label>Notes: {addressInfo?.notes}</Label>
       </CardContent>
-      <CardFooter className="p-3 flex justify-between gap-2">
-        <Button 
-          variant="outline" 
-          onClick={(e) => {
-            e.stopPropagation();
-            handleEditAddress(addressInfo);
-          }}
-        >
-          Edit
-        </Button>
-        <Button 
-          variant="destructive"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleDeleteAddress(addressInfo);
-          }}
-        >
-          Delete
-        </Button>
+      <CardFooter className="p-3 flex justify-between">
+        <Button onClick={() => handleEditAddress(addressInfo)}>Edit</Button>
+        <Button onClick={() => handleDeleteAddress(addressInfo)}>Delete</Button>
       </CardFooter>
     </Card>
   );
