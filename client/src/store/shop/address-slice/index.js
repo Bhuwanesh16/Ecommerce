@@ -13,7 +13,7 @@ export const addNewAddress=createAsyncThunk('/address/addNewAddress',
     });
 
 export const fetchAllAddress=createAsyncThunk('/address/fetchAllAddress',
-    async({userId})=>{
+    async(userId)=>{
         const response=await axios.get(`http://localhost:5000/api/shop/address/get/${userId}`);
 
         return response.data;
@@ -35,34 +35,32 @@ export const deleteAddress=createAsyncThunk('/address/deleteAddress',
 )
 
 const addressSlice=createSlice({
-    name:"address",
+    name:"shopAddress",
     initialState,
     reducers:{},
     extraReducers:(builder)=>{
         builder
-          .addCase(addNewAddress.pending,(state)=>{
-            state.isLoading=true;
-          })
-          .addCase(addNewAddress.fulfilled,(state,action)=>{
-            state.isLoading=false;
-            state.addressList=action.payload.data;
-          })
-          .addCase(addNewAddress.rejected,(state)=>{
-            state.isLoading=false;
-            state.addressList=[];
-          })
-          .addCase(fetchAllAddress.pending,(state)=>{
-            state.isLoading=true;
-          })
-          .addCase(fetchAllAddress.fulfilled,(state,action)=>{
-            state.isLoading=false;
-            state.addressList=action.payload.data;
-          })
-          .addCase(fetchAllAddress.rejected,(state)=>{
-            state.isLoading=false;
-            state.addressList=[];
-          });
-    }
+      .addCase(addNewAddress.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addNewAddress.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(addNewAddress.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(fetchAllAddress.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllAddress.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.addressList = action.payload.data;
+      })
+      .addCase(fetchAllAddress.rejected, (state) => {
+        state.isLoading = false;
+        state.addressList = [];
+      });
+    },
 });
 
 export default addressSlice.reducer;

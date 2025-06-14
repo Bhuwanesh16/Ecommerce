@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import banner1 from "../../assets/image.png";
+import banner1 from "../../assets/image5.png";
 import banner2 from "../../assets/image1.png";
 import banner3 from "../../assets/image2.png";
 import banner4 from "../../assets/image3.png";
