@@ -35,9 +35,10 @@ function MenuItems() {
   function handleNavigate(getCurrentMenuItem) {
     sessionStorage.removeItem("filters");
     const currentFilter =
-      getCurrentMenuItem.id !== "home" &&
-        getCurrentMenuItem.id !== "products" &&
-        getCurrentMenuItem.id !== "search"
+      getCurrentMenuItem.id !== "home" 
+      // &&
+      //   getCurrentMenuItem.id !== "products" &&
+      //   getCurrentMenuItem.id !== "search"
         ? {
           category: [getCurrentMenuItem.id],
         }
@@ -45,11 +46,12 @@ function MenuItems() {
 
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
 
-    location.pathname.includes("listing") && currentFilter !== null
-      ? setSearchParams(
-        new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
-      )
-      : navigate(getCurrentMenuItem.path);
+    // location.pathname.includes("listing") && currentFilter !== null
+    //   ? setSearchParams(
+    //     new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
+    //   )
+    //   :
+       navigate(getCurrentMenuItem.path);
   }
 
   return (
