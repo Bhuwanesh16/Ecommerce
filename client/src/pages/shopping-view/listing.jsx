@@ -112,7 +112,7 @@ function ShoppingListing() {
         setOpenDetailsDialog(true);
     },[productDetails])
 
-    console.log(cartItems,"cartItems");
+   
    
     return (
 

@@ -80,6 +80,8 @@ function HeaderRightContent() {
     dispatch(fetchCartItems(user?.id))
   },[dispatch, user?.id]); 
 
+  console.log(user,"user");
+
  
 
   return (
@@ -89,7 +91,9 @@ function HeaderRightContent() {
         <ShoppingCart className="w-6 h-6" />
         <span className="sr-only">User cart</span>
       </Button>
-      <UserCartWrapper cartItems={ cartItems && cartItems.items && cartItems.items.length > 0
+      <UserCartWrapper 
+      setOpenCartSheet={setOpenCartSheet}
+      cartItems={ cartItems && cartItems.items && cartItems.items.length > 0
               ? cartItems.items : []}/>
       </Sheet>
      <DropdownMenu>
@@ -102,7 +106,7 @@ function HeaderRightContent() {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" className="w-56">
-          <DropdownMenuLabel>Logged in as {user?.email[0]}</DropdownMenuLabel>
+          <DropdownMenuLabel>Logged in as {user?.email?.split('@')[0]?.[0]?.toUpperCase() ?? 'U'}</DropdownMenuLabel>
           <DropdownMenuSeparator/>
           <DropdownMenuItem onClick={()=>navigate('/shop/account')}>
             <UserCog className="mr-2 h-8 w-4"/>

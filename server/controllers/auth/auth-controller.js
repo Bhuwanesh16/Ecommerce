@@ -88,7 +88,7 @@ const loginUser = async (req, res) => {
         userName: user.userName,
       },
       "CLIENT_SECRET_KEY",
-      { expiresIn: "60m" }
+      { expiresIn: "1h" }
     );
 
    
@@ -98,10 +98,10 @@ const loginUser = async (req, res) => {
       success: true,
       message: "Logged in successfully",
       user: {
+        userName: user.userName,
         email: user.email,
         role: user.role,
         id: user._id,
-        userName: user.userName,
       },
     });
   } catch (e) {

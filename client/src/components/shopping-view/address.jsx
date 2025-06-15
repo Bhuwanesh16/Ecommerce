@@ -27,8 +27,9 @@ const initialAddressFormData = {
     function handleManageAddress(event) {
         event.preventDefault();
         
-        if(addressList.length >=3)
+        if(addressList.length >=3 && currentEditedId===null)
         {
+          setFormData(initialAddressFormData);
           toast.error("You can't add more than 3 addresses");
           return;
         }
@@ -99,7 +100,7 @@ const initialAddressFormData = {
 
     return (
         <Card>
-            <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2  gap-2">
+            <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2">
                 {addressList && addressList.length > 0
                     ? addressList.map((singleAddressItem) => (
                         <AddressCard

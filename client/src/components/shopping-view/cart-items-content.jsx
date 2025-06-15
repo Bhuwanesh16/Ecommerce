@@ -61,7 +61,6 @@ function UserCartItemContent({ cartItem }) {
                         variant="outline"
                         className="h-8 w-8 rounded-full"
                         size="icon"
-                        disabled={cartItem?.quantity === 1}
                         onClick={() => handleUpdateQuantity(cartItem, "plus")}
                     >
                         <Plus className="w-4 h-4" />

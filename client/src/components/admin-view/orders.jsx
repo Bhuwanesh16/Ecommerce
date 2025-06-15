@@ -1,18 +1,18 @@
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import AdminOrdersDetailView from "./order-details";
 
 
 
-
-function ShoppingOrders()
+function AdminOrdersView()
 {
     return(
-        <Card>
-            <CardHeader>
-                <CardTitle>Order History</CardTitle>
-            </CardHeader>
-            <CardContent>
+    <Card>
+        <CardHeader>
+            <CardTitle>All Orders</CardTitle>
+        </CardHeader>
+        <CardContent>
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -32,13 +32,14 @@ function ShoppingOrders()
                             <TableCell>In Process</TableCell>
                             <TableCell>$1000</TableCell>
                             <TableCell>
-                                <Button>View Details</Button>
+                                <Button onClick={()=>{AdminOrdersDetailView()}}>View Details</Button>
                             </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
             </CardContent>
-        </Card>
-    )
+
+    </Card>
+    );
 }
-export default ShoppingOrders;
+export default AdminOrdersView;
