@@ -1,12 +1,41 @@
 
 import Address from '@/components/shopping-view/address';
 import image from '../../assets/image.png';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import UserCartItemsContent from "@/components/shopping-view/cart-items-content";
 import { Button } from '@/components/ui/button';
+import { toast } from "sonner";
 
 function ShoppingCheckout() {
     const { cartItems } = useSelector((state) => state.shopCart);
+    const { user } = useSelector((state) => state.auth);
+    const { approvedURL}=useSelector((state)=>state.shopOrder);
+    const dispatch=useDispatch();
+
+    function handleInitiatePaypalPayment() {
+        const orderData = {
+
+            userId: user?.id,
+            cartItems: cartItems.items.map(singleCartItem => ({
+                productId: singleCartItem?.productId,
+                title: singleCartItem?.title,
+                image: singleCartItem?.image,
+                price: singleCartItem?.salePrice > 0
+                    ? singleCartItem?.salePrice
+                    : singleCartItem?.price,
+                quantity: singleCartItem?.quantity,
+            })),
+            addressInfo,
+            orderStatus,
+            paymentMethod,
+            paymentStatus,
+            totalAmount,
+            orderDate,
+            orderUpdateDate,
+            paymentId,
+            payerId
+        }
+    }
 
     const totalCartAmount =
         cartItems && cartItems.items && cartItems.items.length > 0
@@ -43,7 +72,7 @@ function ShoppingCheckout() {
                         </div>
                     </div>
                     <div className='mt-4 w-full'>
-                        <Button className="cursor-pointer w-full">Checkout with Paypal</Button>
+                        <Button onClick={handleInitiatePaypalPayment} className="cursor-pointer w-full">Checkout with Paypal</Button>
                     </div>
 
                 </div>

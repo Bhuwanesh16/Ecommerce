@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Dialog } from "../ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import AdminOrdersDetailView from "./order-details";
 
@@ -7,6 +9,7 @@ import AdminOrdersDetailView from "./order-details";
 
 function AdminOrdersView()
 {
+    const [OpenDetailsDialog, setOpenDetailsDialog]=useState(false);
     return(
     <Card>
         <CardHeader>
@@ -32,7 +35,10 @@ function AdminOrdersView()
                             <TableCell>In Process</TableCell>
                             <TableCell>$1000</TableCell>
                             <TableCell>
-                                <Button onClick={()=>{AdminOrdersDetailView()}}>View Details</Button>
+                                <Dialog open={OpenDetailsDialog} onOpenChange={setOpenDetailsDialog}>
+                                <Button onClick={()=>setOpenDetailsDialog(true)}>View Details</Button>
+                                <AdminOrdersDetailView/>
+                                </Dialog>
                             </TableCell>
                         </TableRow>
                     </TableBody>
