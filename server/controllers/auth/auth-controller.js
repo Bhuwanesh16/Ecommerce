@@ -2,62 +2,108 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
 
+
+
+// Helper function for validation
+const validateRegistration = (userName, email, password) => {
+  if (!userName || !email || !password) {
+    return { isValid: false, message: 'All fields are required' };
+  }
+
+  if (password.length < 6) {
+    return { isValid: false, message: 'Password must be at least 6 characters' };
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { isValid: false, message: 'Invalid email format' };
+  }
+
+  return { isValid: true };
+};
+
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
 
+  // Input validation
+  const validation = validateRegistration(userName, email, password);
+  if (!validation.isValid) {
+    return res.status(400).json({
+      success: false,
+      message: validation.message
+    });
+  }
+
   try {
-    
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exists with the same email! Please try again",
-      });
+    // Check for existing user (optimized to run in parallel)
+    const [existingEmail, existingUserName] = await Promise.all([
+      User.findOne({ email }),
+      User.findOne({ userName })
+    ]);
+
+    if (existingEmail || existingUserName) {
+      const message = existingEmail
+        ? "User already exists with this email"
+        : "Username already taken";
+      return res.status(400).json({ success: false, message });
     }
 
-    
-    const existingUserName = await User.findOne({ userName });
-    if (existingUserName) {
-      return res.status(400).json({
-        success: false,
-        message: "Username already taken! Please try another",
-      });
-    }
-
-   
+    // Create new user
     const hashedPassword = await bcrypt.hash(password, 12);
-
-    
-    const newUser = new User({
+    const newUser = await User.create({
       userName,
       email,
-      password: hashedPassword,
+      password: hashedPassword
     });
 
-    await newUser.save();
+    // Generate token immediately after registration
+    const token = jwt.sign(
+      {
+        id: newUser._id,
+        email: newUser.email,
+        userName: newUser.userName
+      },
+      process.env.JWT_SECRET || "CLIENT_SECRET_KEY",
+      { expiresIn: '1h' }
+    );
 
-    return res.status(200).json({
+    // Set cookie and return response
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    return res.status(201).json({
       success: true,
       message: "User registered successfully",
+      user: {
+        id: newUser._id,
+        userName: newUser.userName,
+        email: newUser.email
+      }
     });
+
   } catch (e) {
-   
+    console.error("Registration Error:", e);
+
     if (e.code === 11000) {
       const field = Object.keys(e.keyPattern)[0];
       return res.status(400).json({
         success: false,
-        message: `${field} already exists!`,
+        message: `${field} already exists`
       });
     }
 
-    console.error("Register Error:", e);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
+      error: process.env.NODE_ENV === 'development' ? e.message : undefined
     });
   }
 };
 
+// ... (keep your existing loginUser, logoutUser, authMiddleware functions)
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -70,7 +116,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-   
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).json({
@@ -79,7 +125,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    
+
     const token = jwt.sign(
       {
         id: user._id,
@@ -91,7 +137,7 @@ const loginUser = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-   
+
     res.cookie("token", token, { httpOnly: true, secure: false });
 
     return res.status(200).json({
@@ -142,4 +188,4 @@ const authMiddleware = async (req, res, next) => {
 };
 
 
-module.exports = { registerUser, loginUser, logoutUser, authMiddleware};
+module.exports = { registerUser, loginUser, logoutUser, authMiddleware };

@@ -1,5 +1,7 @@
 const Order = require('../../models/Order');
 const paypal = require("../../helpers/paypal");
+const Cart = require("../../models/Cart");
+const Product = require("../../models/Product");
 
 
 const createOrder = async (req, res) => {
@@ -11,7 +13,8 @@ const createOrder = async (req, res) => {
             orderDate,
             orderUpdateDate,
             paymentId,
-            payerId } = req.body;
+            payerId,
+            cartId } = req.body;
 
         const create_payment_json = {
             intent: 'sale',
@@ -52,7 +55,11 @@ const createOrder = async (req, res) => {
             }
             else {
                 const newlyCreatedOrder = new Order({
-                    userId, cartItems, addressInfo, orderStatus,
+                    userId,
+                    cartId,
+                    cartItems,
+                    addressInfo,
+                    orderStatus,
                     paymentMethod,
                     paymentStatus,
                     totalAmount,
@@ -79,44 +86,45 @@ const createOrder = async (req, res) => {
         console.log(e);
         res.status(500).json({
             success: false,
-            messgae: 'Some error occurred'
+            message: 'Some error occurred'
         })
     }
 }
 const capturePayment = async (req, res) => {
     try {
+        const { payerId, orderId, paymentId } = req.body;
+        const order = await Order.findById(orderId);
 
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order can not be found",
+            });
+        }
+
+        order.paymentStatus = "paid";
+        order.orderStatus = "confirmed";
+        order.paymentId = paymentId;
+        order.payerId = payerId;
+
+        const getCartId = order.cartId;
+        await Cart.findByIdAndDelete(getCartId);
+
+        await order.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Order confirmed",
+            data: order
+        })
     }
     catch (e) {
         console.log(e);
         res.status(500).json({
             success: false,
-            messgae: 'Some error occurred'
+            message: 'Some error occurred'
         })
     }
 }
-const getOrderDetails = async (req, res) => {
-    try {
 
-    }
-    catch (e) {
-        console.log(e);
-        res.status(500).json({
-            success: false,
-            messgae: 'Some error occurred'
-        })
-    }
-}
-const getAllOrdersByUser = async (req, res) => {
-    try {
-
-    }
-    catch (e) {
-        console.log(e);
-        res.status(500).json({
-            success: false,
-            messgae: 'Some error occurred'
-        })
-    }
-}
-module.exports = { createOrder, capturePayment, getAllOrdersByUser, getOrderDetails };
+module.exports = { createOrder, capturePayment };

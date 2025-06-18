@@ -9,17 +9,18 @@ const initialState = {
 }
 export const registerUser = createAsyncThunk(
   "/auth/register",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        formData,
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
 
-  async (formData) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/auth/register",
-      formData,
-      {
-        withCredentials: true,
-      }
-    );
-
-    return response.data;
+      return rejectWithValue(error.response?.data);
+    }
   }
 );
 
@@ -65,7 +66,7 @@ export const logoutUser = createAsyncThunk(
     const response = await axios.post(
       "http://localhost:5000/api/auth/logout",
       {},
-      
+
       {
         withCredentials: true,
       }
@@ -95,10 +96,12 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
       })
-      .addCase(registerUser.rejected, (state) => {
+      .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = false;
         state.user = null;
+        // You can store the error message if needed
+        state.error = action.payload?.message;
       })
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
@@ -129,7 +132,7 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user =  null;
+        state.user = null;
         state.isAuthenticated = false;
       });
   }

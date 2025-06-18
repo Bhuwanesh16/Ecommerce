@@ -22,21 +22,30 @@ function AuthRegister() {
   function onSubmit(event) {
     event.preventDefault();
 
-    dispatch(registerUser(formData)).then((data) => {
-      console.log("Register Response:", data);
+    // Create clean payload object
+    const cleanPayload = {
+      userName: formData.userName.trim(),
+      email: formData.email.trim(),
+      password: formData.password // Don't trim password
+    };
 
-      if (data?.payload?.success) {
-        toast.success(data?.payload?.message || "Success"); // prefer toast.success
-        navigate("/auth/login");
-      } else {
-        toast.error(data?.payload?.message || "Something went wrong");
-      }
+    // Debug before sending
+    console.log("Sending payload:", cleanPayload);
 
-      console.log(data);
-    });
-
+    dispatch(registerUser(cleanPayload))
+      .then((result) => {
+        if (result.payload?.success) {
+          toast.success("Registration successful!");
+          navigate("/login");
+        } else if (result.error) {
+          toast.error(result.error.payload?.message || "Registration failed");
+        }
+      })
+      .catch((error) => {
+        console.error("Registration error:", error);
+        toast.error("An error occurred during registration");
+      });
   }
-
 
   return (
     <div className="mx-auto w-full max-w-md space-y-6">
