@@ -13,8 +13,7 @@ export const addNewProduct=createAsyncThunk('/products/AddNewProduct',
         { headers :
         {
             'Content-Type': 'application/json',
-        },
-    }
+        },        withCredentials: true,    }
         
      ); 
       return result?.data; 
@@ -23,7 +22,7 @@ export const fetchAllProduct=createAsyncThunk('/products/fetchAllProduct',
     async()=>
 {
      const result=await axios.get('http://localhost:5000/api/admin/products/fetch', 
-        
+        { withCredentials: true }
      );
      return result?.data; 
 })
@@ -34,8 +33,7 @@ export const updateProduct=createAsyncThunk('/products/UpdateProduct',
         { headers :
         {
             'Content-Type': 'application/json',
-        },
-    }
+        },        withCredentials: true,    }
         
      ); 
       return result?.data; 
@@ -44,7 +42,7 @@ export const deleteProduct=createAsyncThunk('/products/DeleteProduct',
     async(id)=>
 {
      const result=await axios.delete(`http://localhost:5000/api/admin/products/delete/${id}`, 
-        
+        { withCredentials: true }
      );
       return result?.data;  
 })

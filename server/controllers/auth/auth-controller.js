@@ -10,6 +10,10 @@ const validateRegistration = (userName, email, password) => {
     return { isValid: false, message: 'All fields are required' };
   }
 
+  if (typeof userName === 'string' && userName.trim().length < 2) {
+    return { isValid: false, message: 'Username must be at least 2 characters' };
+  }
+
   if (password.length < 6) {
     return { isValid: false, message: 'Password must be at least 6 characters' };
   }
@@ -23,7 +27,11 @@ const validateRegistration = (userName, email, password) => {
 };
 
 const registerUser = async (req, res) => {
-  const { userName, email, password } = req.body;
+  let { userName, email, password } = req.body;
+
+  // Trim and sanitize inputs
+  userName = typeof userName === 'string' ? userName.trim() : userName;
+  email = typeof email === 'string' ? email.trim().toLowerCase() : email;
 
   // Input validation
   const validation = validateRegistration(userName, email, password);
@@ -85,9 +93,9 @@ const registerUser = async (req, res) => {
     });
 
   } catch (e) {
-    console.error("Registration Error:", e);
+    console.error("Registration Error:", e && e.stack ? e.stack : e);
 
-    if (e.code === 11000) {
+    if (e && e.code === 11000) {
       const field = Object.keys(e.keyPattern)[0];
       return res.status(400).json({
         success: false,
@@ -187,5 +195,15 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
+// admin role middleware
+const adminMiddleware = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: "Unauthorised user!" });
+  }
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ success: false, message: "Forbidden: admin access required" });
+  }
+  next();
+};
 
-module.exports = { registerUser, loginUser, logoutUser, authMiddleware };
+module.exports = { registerUser, loginUser, logoutUser, authMiddleware, adminMiddleware }; 

@@ -5,7 +5,8 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    
+    trim: true,
+    minlength: 2,
   },
   email: {
     type: String,
@@ -23,6 +24,9 @@ const UserSchema = new mongoose.Schema({
     default: 'user'
   }
 });
+
+// Ensure the unique index only applies when userName is a string (avoids conflicts with null/missing values)
+UserSchema.index({ userName: 1 }, { unique: true, partialFilterExpression: { userName: { $type: 'string' } } });
 
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
