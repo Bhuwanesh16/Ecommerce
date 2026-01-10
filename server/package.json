@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "fix-indexes": "node scripts/fix-user-index.js"
   },
   "author": "bhuwanesh",
   "license": "ISC",

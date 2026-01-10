@@ -75,6 +75,9 @@ function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
         </Route>
+        <Route path="/shop/paypal-return" element={<PaypalReturnPage />} />
+        <Route path="/shop/payment-success" element={<PaymentSuccessPage />} />
+
         <Route path="/shop" element={
           <CheckAuth isAuthenticated={isAuthenticated} user={user}>
             <ShoppingLayout />
@@ -84,8 +87,7 @@ function App() {
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
           <Route path="account" element={<ShoppingAccount />} />
-          <Route path="paypal-return" element={<PaypalReturnPage />} />
-          <Route path="payment-success" element={<PaymentSuccessPage />} />
+
         </Route>
         <Route path="*" element={<NotFound />} />
         <Route path="/unauth-page" element={<UnAuthPage />} />

@@ -36,9 +36,9 @@ function MenuItems() {
     sessionStorage.removeItem("filters");
     const currentFilter =
       getCurrentMenuItem.id !== "home" 
-      // &&
-      //   getCurrentMenuItem.id !== "products" &&
-      //   getCurrentMenuItem.id !== "search"
+      &&
+        getCurrentMenuItem.id !== "products" &&
+        getCurrentMenuItem.id !== "search"
         ? {
           category: [getCurrentMenuItem.id],
         }
@@ -106,7 +106,7 @@ function HeaderRightContent() {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" className="w-56">
-          <DropdownMenuLabel>Logged in as {user?.email?.split('@')[0]?.[0]?.toUpperCase() ?? 'U'}</DropdownMenuLabel>
+          <DropdownMenuLabel>Logged in as {user?.email?.split('@')[0]?.toUpperCase() ?? 'U'}</DropdownMenuLabel>
           <DropdownMenuSeparator/>
           <DropdownMenuItem onClick={()=>navigate('/shop/account')}>
             <UserCog className="mr-2 h-8 w-4"/>

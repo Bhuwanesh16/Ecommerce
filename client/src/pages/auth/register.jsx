@@ -36,7 +36,7 @@ function AuthRegister() {
       .then((result) => {
         if (result.payload?.success) {
           toast.success("Registration successful!");
-          navigate("/login");
+          navigate("/auth/login");
         } else if (result.error) {
           toast.error(result.error.payload?.message || "Registration failed");
         }

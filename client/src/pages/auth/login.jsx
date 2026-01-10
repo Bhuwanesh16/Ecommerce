@@ -27,6 +27,9 @@ function AuthLogin() {
             }
 
             console.log(data);
+        }).catch((err) => {
+            console.error('Login action failed:', err);
+            toast.error(err?.message || 'Something went wrong during login');
         })
 
     }
