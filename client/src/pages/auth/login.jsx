@@ -9,7 +9,8 @@ import { toast } from "sonner";
 const initialState = {
     userName: "",
     email: "",
-    password: ""
+    password: "",
+    role: "user"
 
 }
 function AuthLogin() {

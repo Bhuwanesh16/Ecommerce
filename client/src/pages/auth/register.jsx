@@ -12,6 +12,7 @@ const initialState = {
   userName: "",
   email: "",
   password: "",
+  role: "user"
 };
 
 function AuthRegister() {
@@ -26,7 +27,8 @@ function AuthRegister() {
     const cleanPayload = {
       userName: formData.userName.trim(),
       email: formData.email.trim(),
-      password: formData.password // Don't trim password
+      password: formData.password, // Don't trim password
+      role: formData.role || "user"
     };
 
     // Debug before sending

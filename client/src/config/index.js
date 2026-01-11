@@ -14,6 +14,15 @@ export const registerFormControls = [
     type: "email",
   },
   {
+    name: "role",
+    label: "Role",
+    componentType: "select",
+    options: [
+      { id: "user", label: "User" },
+      { id: "admin", label: "Admin" }
+    ],
+  },
+  {
     name: "password",
     label: "Password",
     placeholder: "Enter your password",
@@ -36,6 +45,15 @@ export const loginFormControls = [
     placeholder: "Enter your password",
     componentType: "input",
     type: "password",
+  },
+  {
+    name: "role",
+    label: "Role",
+    componentType: "select",
+    options: [
+      { id: "user", label: "User" },
+      { id: "admin", label: "Admin" }
+    ],
   },
 ];
 

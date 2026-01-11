@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
 
+const JWT_SECRET = process.env.JWT_SECRET || "CLIENT_SECRET_KEY";
+
 
 
 // Helper function for validation
@@ -27,11 +29,26 @@ const validateRegistration = (userName, email, password) => {
 };
 
 const registerUser = async (req, res) => {
-  let { userName, email, password } = req.body;
+  console.log('Registration attempt', { body: req.body });
+  let { userName, email, password, role, adminSecret } = req.body;
 
   // Trim and sanitize inputs
   userName = typeof userName === 'string' ? userName.trim() : userName;
   email = typeof email === 'string' ? email.trim().toLowerCase() : email;
+  role = typeof role === 'string' ? role.trim().toLowerCase() : 'user';
+  if (!['user', 'admin'].includes(role)) {
+    role = 'user';
+  }
+  console.log('Sanitized registration data:', { userName, email, role });
+
+  // Optional admin signup protection (set ADMIN_REGISTRATION_SECRET env var to require a secret)
+  const ADMIN_SECRET = process.env.ADMIN_REGISTRATION_SECRET;
+  if (role === 'admin' && ADMIN_SECRET) {
+    if (adminSecret !== ADMIN_SECRET) {
+      console.warn('Unauthorized admin signup attempt:', { email });
+      return res.status(403).json({ success: false, message: 'Admin registration requires a valid secret' });
+    }
+  }
 
   // Input validation
   const validation = validateRegistration(userName, email, password);
@@ -61,17 +78,19 @@ const registerUser = async (req, res) => {
     const newUser = await User.create({
       userName,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      role
     });
 
     // Generate token immediately after registration
     const token = jwt.sign(
       {
         id: newUser._id,
+        role: newUser.role,
         email: newUser.email,
         userName: newUser.userName
       },
-      process.env.JWT_SECRET || "CLIENT_SECRET_KEY",
+      JWT_SECRET,
       { expiresIn: '1h' }
     );
 
@@ -88,7 +107,8 @@ const registerUser = async (req, res) => {
       user: {
         id: newUser._id,
         userName: newUser.userName,
-        email: newUser.email
+        email: newUser.email,
+        role: newUser.role
       }
     });
 
@@ -141,16 +161,18 @@ const loginUser = async (req, res) => {
         email: user.email,
         userName: user.userName,
       },
-      "CLIENT_SECRET_KEY",
+      JWT_SECRET,
       { expiresIn: "1h" }
     );
 
 
-    res.cookie("token", token, { httpOnly: true, secure: false });
+    // Set cookie (dev: secure=false). Also return token in body to support clients where cookies are blocked.
+    res.cookie("token", token, { httpOnly: true, secure: false, sameSite: 'lax' });
 
     return res.status(200).json({
       success: true,
       message: "Logged in successfully",
+      token,
       user: {
         userName: user.userName,
         email: user.email,
@@ -176,18 +198,41 @@ const logoutUser = (req, res) => {
 
 //auth middleware
 const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token)
+  // Prefer cookie token, fallback to Authorization header
+  let token = req.cookies.token;
+  let tokenSource = 'cookie';
+
+  if (!token) {
+    // Try Authorization header
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1];
+      tokenSource = 'header';
+    }
+  }
+
+  if (!token) {
+    // DEBUG: log cookies and auth header when token is missing to help diagnose cross-site cookie issues
+    console.log('Auth: missing token. Cookies:', req.cookies, 'AuthHeader:', req.headers['authorization']);
     return res.status(401).json({
       success: false,
       message: "Unauthorised user!",
     });
+  }
 
   try {
-    const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
-    req.user = decoded;
+    const decoded = jwt.verify(token, JWT_SECRET);
+    // Fetch latest user from DB so role changes take effect immediately
+    const user = await User.findById(decoded.id).select('-password').lean();
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Unauthorised user!" });
+    }
+    // DEBUG: log id, role and token source to help trace role checks (remove in production)
+    console.log(`Auth: user=${user._id} role=${user.role} (source=${tokenSource})`);
+    req.user = user;
     next();
   } catch (error) {
+    console.error('Auth middleware error:', error);
     res.status(401).json({
       success: false,
       message: "Unauthorised user!",
